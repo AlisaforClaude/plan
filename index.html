@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>idealist · производственный план</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== BRAND COLORS ========== */
+  :root {
+    --graphite:   #232323;
+    --graphite2:  #2e2e2e;
+    --graphite3:  #3a3a3a;
+    --graphite4:  #4a4a4a;
+    --silver:     #cbc9c9;
+    --silver-dim: #888;
+    --terracotta: #de7a58;
+    --green:      #3f574f;
+    --green-light:#4d6b61;
+    --white:      #f5f3f0;
+    --white-dim:  #c0bdb8;
+    --radius:     4px;
+    --radius-lg:  8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--graphite);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ========== LOADING ========== */
+  #loading {
+    position: fixed; inset: 0;
+    background: var(--graphite);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    gap: 32px;
+  }
+
+  .loading-logo {
+    font-size: clamp(28px, 6vw, 48px);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--white);
+  }
+
+  .loading-logo span {
+    color: var(--terracotta);
+    font-style: italic;
+  }
+
+  .loading-sub {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    font-weight: 400;
+  }
+
+  .progress-bar {
+    width: 120px;
+    height: 1px;
+    background: var(--graphite3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    width: 0%;
+    animation: progress 1.2s ease forwards;
+  }
+
+  @keyframes progress {
+    0% { width: 0%; }
+    60% { width: 70%; }
+    100% { width: 100%; }
+  }
+
+  /* ========== LAYOUT ========== */
+  #app { display: none; min-height: 100vh; }
+
+  /* ========== HEADER ========== */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--graphite);
+    border-bottom: 1px solid var(--graphite2);
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 24px 0;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .logo {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .logo em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .logo-desc {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    font-weight: 400;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .today-pill {
+    font-size: 11px;
+    color: var(--silver-dim);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .refresh-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--graphite3);
+    background: none;
+    color: var(--silver-dim);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .refresh-btn:hover { border-color: var(--terracotta); color: var(--terracotta); }
+  .refresh-btn.spinning { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ========== PERSON CHIPS ========== */
+  .chips-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+  }
+
+  .chip {
+    padding: 6px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--graphite3);
+    background: none;
+    color: var(--silver-dim);
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .chip:hover { border-color: var(--silver-dim); color: var(--white-dim); }
+
+  .chip.active {
+    background: var(--graphite3);
+    border-color: var(--white-dim);
+    color: var(--white);
+  }
+
+  /* ========== TABS ========== */
+  .tabs-row {
+    display: flex;
+    gap: 0;
+  }
+
+  .tab-btn {
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: var(--silver-dim);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .tab-btn:hover { color: var(--white-dim); }
+  .tab-btn.active { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+
+  /* ========== MAIN ========== */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+  }
+
+  /* ========== DATE NAV ========== */
+  .date-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .nav-arrow {
+    width: 32px; height: 32px;
+    border: 1px solid var(--graphite3);
+    background: none;
+    color: var(--silver-dim);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .nav-arrow:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+  .date-range-label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--white-dim);
+    letter-spacing: 0.06em;
+    flex: 1;
+  }
+
+  /* ========== STATS ========== */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--graphite2);
+    margin-bottom: 32px;
+    border: 1px solid var(--graphite2);
+  }
+
+  .stat-block {
+    background: var(--graphite);
+    padding: 20px 24px;
+  }
+
+  .stat-num {
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-num span {
+    color: var(--terracotta);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    font-weight: 400;
+  }
+
+  /* ========== SECTION HEADER ========== */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+    margin-top: 32px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--graphite2);
+  }
+
+  .section-head:first-of-type { margin-top: 0; }
+
+  .section-date {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+
+  .section-weekday {
+    font-size: 11px;
+    color: var(--silver-dim);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+  }
+
+  .today-tag {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    border: 1px solid var(--terracotta);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .count-tag {
+    font-size: 10px;
+    color: var(--silver-dim);
+    margin-left: auto;
+  }
+
+  /* ========== TASK ROWS ========== */
+  .task-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto;
+    align-items: center;
+    gap: 0;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--graphite2);
+    transition: background 0.1s;
+  }
+
+  .task-row:last-child { border-bottom: none; }
+  .task-row:hover { background: rgba(255,255,255,0.02); margin: 0 -8px; padding: 14px 8px; }
+
+  .task-row.done .task-title { color: var(--graphite4); text-decoration: line-through; }
+  .task-row.done .task-info { color: var(--graphite4); }
+
+  .task-n {
+    font-size: 10px;
+    color: var(--graphite4);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .task-body { min-width: 0; }
+
+  .task-title {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .task-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .info-item {
+    font-size: 11px;
+    color: var(--silver-dim);
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .info-item.executor { color: var(--white-dim); }
+
+  .pct-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .pct-done    { color: var(--graphite4); background: rgba(255,255,255,0.04); }
+  .pct-high    { color: var(--terracotta); background: rgba(222,122,88,0.1); }
+  .pct-mid     { color: #c89b47; background: rgba(200,155,71,0.1); }
+  .pct-low     { color: #a05a5a; background: rgba(160,90,90,0.1); }
+  .pct-active  { color: var(--terracotta); background: rgba(222,122,88,0.12); }
+
+  /* ========== OVERVIEW ========== */
+  .overview-day {
+    margin-bottom: 24px;
+  }
+
+  .overview-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--graphite2);
+    margin-bottom: 0;
+  }
+
+  .overview-date-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+
+  .exec-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 0;
+  }
+
+  .exec-row {
+    display: contents;
+  }
+
+  .exec-name-cell {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--graphite2);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--silver-dim);
+    letter-spacing: 0.06em;
+    text-transform: capitalize;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 12px;
+  }
+
+  .exec-tasks-cell {
+    padding: 10px 0 10px 16px;
+    border-bottom: 1px solid var(--graphite2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .exec-task-item {
+    font-size: 13px;
+    color: var(--white);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .exec-task-item.done {
+    color: var(--graphite4);
+    text-decoration: line-through;
+  }
+
+  /* ========== EMPTY ========== */
+  .empty-state {
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .empty-line {
+    width: 40px;
+    height: 1px;
+    background: var(--terracotta);
+    margin: 0 auto 24px;
+  }
+
+  .empty-text {
+    font-size: 13px;
+    color: var(--silver-dim);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+
+  /* ========== MOBILE ========== */
+  @media (max-width: 600px) {
+    .header-inner { padding: 16px 16px 0; }
+    main { padding: 20px 16px 60px; }
+
+    .logo { font-size: 20px; }
+    .today-pill { display: none; }
+
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stat-block:last-child { grid-column: 1 / -1; }
+
+    .task-row { grid-template-columns: 32px 1fr auto; }
+    .task-title { font-size: 13px; }
+
+    .stat-num { font-size: 26px; }
+    .stat-block { padding: 16px; }
+
+    .exec-grid { grid-template-columns: 80px 1fr; }
+
+    .chips-row { gap: 5px; }
+    .chip { padding: 5px 10px; font-size: 11px; }
+
+    .tab-btn { padding: 10px 14px; font-size: 10px; }
+
+    .section-head { flex-wrap: wrap; }
+  }
+
+  /* ========== ERROR BANNER ========== */
+  .error-banner {
+    background: rgba(222,122,88,0.1);
+    border: 1px solid rgba(222,122,88,0.3);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  /* Subtle gear decoration */
+  .gear-deco {
+    position: fixed;
+    bottom: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div>
+    <div class="loading-logo"><em>i</em>dealist</div>
+    <div class="loading-sub" style="margin-top:8px;text-align:center">типография</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill"></div></div>
+  <div class="loading-sub" id="loading-msg">загружаем данные</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <header>
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="logo-wrap">
+          <div class="logo"><em>i</em>dealist</div>
+          <div class="logo-desc">производственный план</div>
+        </div>
+        <div class="header-right">
+          <div class="today-pill" id="today-pill"></div>
+          <button class="refresh-btn" onclick="loadData()" title="Обновить данные">↻</button>
+        </div>
+      </div>
+
+      <div class="chips-row" id="chips-row"></div>
+
+      <div class="tabs-row">
+        <button class="tab-btn active" id="tab-my" onclick="switchTab('my')">Мои задачи</button>
+        <button class="tab-btn" id="tab-overview" onclick="switchTab('overview')">Загрузка производства</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="error-banner" id="error-banner">
+      Не удалось загрузить данные. Показаны кешированные данные.
+    </div>
+    <div id="view-my"></div>
+    <div id="view-overview" style="display:none"></div>
+  </main>
+
+</div>
+
+<!-- Gear decoration (brand motif) -->
+<svg class="gear-deco" viewBox="0 0 200 200" fill="none" stroke="#de7a58" stroke-width="1">
+  <circle cx="100" cy="100" r="60"/>
+  <circle cx="100" cy="100" r="40"/>
+  <circle cx="100" cy="100" r="10"/>
+  <!-- gear teeth approximation -->
+  <rect x="96" y="32" width="8" height="14" rx="1"/>
+  <rect x="96" y="154" width="8" height="14" rx="1"/>
+  <rect x="32" y="96" width="14" height="8" rx="1"/>
+  <rect x="154" y="96" width="14" height="8" rx="1"/>
+</svg>
+
+<script>
+// ============================================================
+//  CONFIG — замените SPREADSHEET_ID на ваш ID таблицы
+// ============================================================
+const SPREADSHEET_ID = '1UK4pMl6ojbTmFS5EZQ1M562btHkWhpRXSK_wB2tvexc';
+const SHEET_NAME = 'График проекта';
+// Укажите ваш API-ключ Google Sheets (получить на console.cloud.google.com):
+const API_KEY = 'ВСТАВЬТЕ_ВАШ_API_KEY_ЗДЕСЬ';
+
+// ============================================================
+//  FALLBACK DATA (используется если API недоступен)
+// ============================================================
+const FALLBACK_TASKS = [
+  {n:1,  name:"кп балтех",                     exec:"алиса",                           start:"02/02/2026", end:"08/02/2026", pct:100},
+  {n:2,  name:"коробки идеалист",               exec:"евгений",                         start:"04/02/2026", end:"03/03/2026", pct:10},
+  {n:3,  name:"катюши открытки",                exec:"евгений вадим антон",             start:"04/02/2026", end:"08/02/2026", pct:100},
+  {n:4,  name:"прижарка наклейки",              exec:"антон",                           start:"04/02/2026", end:"04/02/2026", pct:100},
+  {n:5,  name:"постер",                         exec:"сергей",                          start:"04/02/2026", end:"05/02/2026", pct:100},
+  {n:6,  name:"альбом мкс",                     exec:"алиса евгений",                  start:"02/02/2026", end:"02/02/2026", pct:100},
+  {n:7,  name:"вау продукт для оли",            exec:"евгений",                         start:"02/02/2026", end:"02/02/2026", pct:100},
+  {n:8,  name:"вау продукт",                    exec:"евгений",                         start:"02/02/2026", end:"02/02/2026", pct:100},
+  {n:9,  name:"кп петростат",                   exec:"алиса",                           start:"02/02/2026", end:"02/02/2026", pct:100},
+  {n:10, name:"15 открыток 23 февраля",         exec:"алиса владимир вадим",           start:"04/02/2026", end:"04/02/2026", pct:100},
+  {n:11, name:"конструкторы",                   exec:"евгений",                         start:"04/02/2026", end:"04/02/2026", pct:100},
+  {n:12, name:"блокноты 23",                    exec:"алиса владимир антон",           start:"04/02/2026", end:"04/02/2026", pct:100},
+  {n:13, name:"открытки 8 марта",               exec:"евгений",                         start:"04/02/2026", end:"04/02/2026", pct:100},
+  {n:14, name:"шубер для конструкторов самолет",exec:"алиса владимир евгений",         start:"05/02/2026", end:"05/02/2026", pct:100},
+  {n:15, name:"цифра для входной группы",       exec:"евгений",                         start:"05/02/2026", end:"05/02/2026", pct:100},
+  {n:16, name:"открытка с 3д элементом",        exec:"евгений",                         start:"12/02/2026", end:"15/02/2026", pct:100},
+  {n:17, name:"герофарм грамоты",               exec:"алиса вадим владимир",           start:"13/02/2026", end:"17/02/2026", pct:100},
+  {n:18, name:"открытки печать",                exec:"алиса",                           start:"16/02/2026", end:"16/02/2026", pct:100},
+  {n:19, name:"кп профсоюз",                    exec:"алиса",                           start:"16/02/2026", end:"16/02/2026", pct:100},
+  {n:20, name:"кп рхс",                         exec:"алиса",                           start:"16/02/2026", end:"16/02/2026", pct:100},
+  {n:21, name:"ежедневники пскб",               exec:"вадим антон",                    start:"16/02/2026", end:"17/02/2026", pct:100},
+  {n:22, name:"тиснение визитки менеджеров",    exec:"владимир",                        start:"17/02/2026", end:"17/02/2026", pct:100},
+  {n:23, name:"открытки",                       exec:"алиса",                           start:"18/02/2026", end:"18/02/2026", pct:100},
+  {n:24, name:"кп болло",                       exec:"алиса",                           start:"18/02/2026", end:"18/02/2026", pct:100},
+  {n:25, name:"оля печать",                     exec:"алиса",                           start:"18/02/2026", end:"18/02/2026", pct:100},
+  {n:26, name:"хортэк брошюры",                 exec:"алиса",                           start:"18/02/2026", end:"18/02/2026", pct:100},
+  {n:27, name:"кп весенние праздники",          exec:"алиса",                           start:"19/02/2026", end:"19/02/2026", pct:100},
+  {n:28, name:"коробки",                        exec:"антон вадим",                    start:"19/02/2026", end:"24/02/2026", pct:100},
+  {n:29, name:"напечатать оле",                 exec:"алиса",                           start:"19/02/2026", end:"19/02/2026", pct:100},
+  {n:30, name:"открытка идеалист",              exec:"алиса евгений антон вадим владимир", start:"24/02/2026", end:"09/03/2026", pct:100},
+  {n:31, name:"игры тест",                      exec:"евгений алиса",                  start:"02/03/2026", end:"03/03/2026", pct:100},
+  {n:32, name:"подставка акрил",                exec:"алиса",                           start:"09/03/2026", end:"09/03/2026", pct:100},
+  {n:33, name:"блокноты женсовет",              exec:"вадим антон владимир",           start:"12/03/2026", end:"12/03/2026", pct:100},
+  {n:34, name:"упаковка для цветов",            exec:"алиса владимир",                 start:"04/03/2026", end:"04/03/2026", pct:100},
+  {n:35, name:"коробки крышки дно",             exec:"алиса вадим",                    start:"04/03/2026", end:"04/03/2026", pct:100},
+  {n:36, name:"вау продукт корни",              exec:"алиса",                           start:"05/03/2026", end:"05/03/2026", pct:100},
+  {n:37, name:"кп",                             exec:"алиса",                           start:"11/03/2026", end:"11/03/2026", pct:100},
+  {n:38, name:"шава на районе",                 exec:"сергей",                          start:"12/03/2026", end:"12/03/2026", pct:100},
+  {n:39, name:"акрил подставки",                exec:"евгений",                         start:"13/03/2026", end:"15/03/2026", pct:100},
+  {n:40, name:"кп клиника",                     exec:"алиса",                           start:"10/03/2026", end:"10/03/2026", pct:100},
+  {n:41, name:"конверты",                       exec:"антон алиса",                    start:"10/03/2026", end:"10/03/2026", pct:100},
+  {n:42, name:"фальц буклетов",                 exec:"алексей",                         start:"09/03/2026", end:"09/03/2026", pct:100},
+  {n:43, name:"зажарка футболок",               exec:"антон",                           start:"10/03/2026", end:"11/03/2026", pct:100},
+  {n:44, name:"вагон метро",                    exec:"алиса",                           start:"10/03/2026", end:"10/03/2026", pct:100},
+  {n:45, name:"блокноты",                       exec:"алексей",                         start:"11/03/2026", end:"11/03/2026", pct:100},
+  {n:46, name:"коробка для цветов 8 марта",     exec:"алиса владимир",                 start:"06/03/2026", end:"09/03/2026", pct:100},
+  {n:47, name:"хортэк наклейки",                exec:"сергей",                          start:"13/03/2026", end:"17/03/2026", pct:100},
+  {n:48, name:"кп",                             exec:"алиса",                           start:"13/03/2026", end:"15/03/2026", pct:100},
+  {n:49, name:"кп розовый кролик",              exec:"алиса",                           start:"24/03/2026", end:"24/03/2026", pct:100},
+  {n:50, name:"ид хоум",                        exec:"алиса",                           start:"24/03/2026", end:"24/03/2026", pct:100},
+  {n:51, name:"ваш лого",                       exec:"алиса",                           start:"24/03/2026", end:"24/03/2026", pct:100},
+  {n:52, name:"открытки заводы пароходы",       exec:"владимир алиса",                 start:"20/03/2026", end:"22/03/2026", pct:100},
+  {n:53, name:"блокноты бейджи",                exec:"владимир сергей",                start:"18/03/2026", end:"18/03/2026", pct:100},
+  {n:54, name:"мц брошюры",                     exec:"алексей владимир",               start:"16/03/2026", end:"16/03/2026", pct:100},
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+let TASKS = [...FALLBACK_TASKS];
+let selectedPerson = null;
+let currentTab = 'my';
+let myOffset = 0;
+let ovOffset = 0;
+
+const today = new Date(); today.setHours(0,0,0,0);
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function parseDate(s) {
+  if (!s) return null;
+  const [d,m,y] = s.split('/');
+  return new Date(+y, +m-1, +d);
+}
+
+function isOnDate(task, d) {
+  const s = parseDate(task.start), e = parseDate(task.end);
+  if (!s || !e) return false;
+  const dd = new Date(d); dd.setHours(0,0,0,0);
+  return dd >= s && dd <= e;
+}
+
+function fmtShort(d) {
+  return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+}
+
+function fmtFull(d) {
+  return d.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function cap(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+
+function pctClass(p) {
+  if (p >= 100) return 'pct-done';
+  if (p >= 70)  return 'pct-high';
+  if (p >= 30)  return 'pct-mid';
+  return 'pct-low';
+}
+
+function weekDays(offset) {
+  const base = new Date(today);
+  base.setDate(base.getDate() + offset * 7);
+  // week starting from today's Monday
+  const dow = base.getDay() === 0 ? 6 : base.getDay()-1;
+  const mon = new Date(base); mon.setDate(base.getDate() - dow);
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(mon); d.setDate(mon.getDate()+i); return d;
+  });
+}
+
+function getExecutors() {
+  const set = new Set();
+  TASKS.forEach(t => {
+    t.exec.trim().split(/\s+/).forEach(n => { if(n.length>1) set.add(n.toLowerCase().trim()); });
+  });
+  return [...set].sort();
+}
+
+// ============================================================
+//  LOAD from Google Sheets API
+// ============================================================
+async function loadData() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.classList.add('spinning');
+  document.getElementById('loading-msg').textContent = 'обновляем данные...';
+
+  // If no real API key set, just use fallback silently
+  if (API_KEY === 'ВСТАВЬТЕ_ВАШ_API_KEY_ЗДЕСЬ') {
+    TASKS = [...FALLBACK_TASKS];
+    btn.classList.remove('spinning');
+    renderAll();
+    return;
+  }
+
+  try {
+    const range = encodeURIComponent(`${SHEET_NAME}!A7:I300`);
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    const rows = data.values || [];
+    TASKS = rows
+      .filter(r => r[0] && r[1])
+      .map(r => ({
+        n:    parseInt(r[0]) || 0,
+        name: (r[1]||'').trim().toLowerCase(),
+        exec: (r[3]||'').trim().toLowerCase()
+                .replace(/юля/g,'')          // убираем юлю
+                .replace(/ландграф/g,'владимир') // ландграф = владимир
+                .replace(/\s+/g,' ').trim(),
+        start: (r[5]||'').trim(),
+        end:   (r[7]||'').trim(),
+        pct:   parseInt((r[8]||'0').replace('%','')) || 0,
+      }))
+      .filter(t => t.exec !== '');
+    document.getElementById('error-banner').style.display = 'none';
+  } catch(e) {
+    TASKS = [...FALLBACK_TASKS];
+    document.getElementById('error-banner').style.display = 'block';
+  }
+
+  btn.classList.remove('spinning');
+  buildChips();
+  renderAll();
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+window.onload = function() {
+  // Set today label
+  document.getElementById('today-pill').textContent =
+    today.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    buildChips();
+    // Set initial week to include today
+    myOffset = 0;
+    ovOffset = 0;
+    renderAll();
+  }, 1400);
+};
+
+// ============================================================
+//  CHIPS
+// ============================================================
+function buildChips() {
+  const row = document.getElementById('chips-row');
+  row.innerHTML = '';
+
+  const allBtn = document.createElement('button');
+  allBtn.className = 'chip' + (selectedPerson===null?' active':'');
+  allBtn.textContent = 'Все';
+  allBtn.onclick = () => select(null);
+  row.appendChild(allBtn);
+
+  getExecutors().forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (selectedPerson===name?' active':'');
+    btn.dataset.person = name;
+    btn.textContent = cap(name);
+    btn.onclick = () => select(name);
+    row.appendChild(btn);
+  });
+}
+
+function select(name) {
+  selectedPerson = name;
+  myOffset = 0;
+  document.querySelectorAll('#chips-row .chip').forEach(c => c.classList.remove('active'));
+  if (name === null) {
+    document.querySelector('#chips-row .chip').classList.add('active');
+  } else {
+    const c = document.querySelector(`#chips-row .chip[data-person="${name}"]`);
+    if (c) c.classList.add('active');
+  }
+  renderAll();
+}
+
+// ============================================================
+//  TABS
+// ============================================================
+function switchTab(tab) {
+  currentTab = tab;
+  ['my','overview'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('view-'+t).style.display = t===tab?'block':'none';
+  });
+  renderAll();
+}
+
+function renderAll() {
+  if (currentTab === 'my') renderMy();
+  else renderOverview();
+}
+
+// ============================================================
+//  MY TASKS VIEW
+// ============================================================
+function renderMy() {
+  const container = document.getElementById('view-my');
+  const days = weekDays(myOffset);
+
+  // Filter tasks per day
+  const byDay = days.map(day => ({
+    day,
+    tasks: TASKS.filter(t => {
+      if (!isOnDate(t, day)) return false;
+      if (!selectedPerson) return true;
+      return t.exec.split(/\s+/).includes(selectedPerson);
+    })
+  }));
+
+  const allTasks  = byDay.flatMap(d => d.tasks);
+  const inWork    = allTasks.filter(t => t.pct < 100);
+  const done      = allTasks.filter(t => t.pct === 100);
+
+  const rangeLabel = `${fmtShort(days[0])} — ${fmtShort(days[6])}`;
+
+  let html = `
+    <div class="stats-row">
+      <div class="stat-block">
+        <div class="stat-num">${allTasks.length}</div>
+        <div class="stat-label">задач на неделю</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num"><span>${inWork.length}</span></div>
+        <div class="stat-label">в работе</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">${done.length}</div>
+        <div class="stat-label">выполнено</div>
+      </div>
+    </div>
+
+    <div class="date-nav">
+      <button class="nav-arrow" onclick="myOffset--;renderMy()">←</button>
+      <div class="date-range-label">${rangeLabel}</div>
+      <button class="nav-arrow" onclick="myOffset++;renderMy()">→</button>
+    </div>
+  `;
+
+  let hasAny = false;
+
+  byDay.forEach(({day, tasks}) => {
+    if (!tasks.length) return;
+    hasAny = true;
+    const isToday = day.getTime() === today.getTime();
+    const active  = tasks.filter(t => t.pct < 100);
+    const doneT   = tasks.filter(t => t.pct === 100);
+    const ordered = [...active, ...doneT];
+
+    html += `
+      <div class="section-head">
+        <span class="section-date">${day.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}</span>
+        <span class="section-weekday">${day.toLocaleDateString('ru-RU',{weekday:'long'})}</span>
+        ${isToday ? '<span class="today-tag">сегодня</span>' : ''}
+        <span class="count-tag" style="margin-left:auto">${tasks.length}</span>
+      </div>
+    `;
+
+    ordered.forEach(t => {
+      const isDone = t.pct === 100;
+      const execNames = t.exec.trim().split(/\s+/)
+        .filter(x => x.length > 1)
+        .map(cap).join(', ');
+
+      html += `
+        <div class="task-row ${isDone?'done':''}">
+          <div class="task-n">#${t.n}</div>
+          <div class="task-body">
+            <div class="task-title">${cap(t.name)}</div>
+            <div class="task-info">
+              ${!selectedPerson ? `<span class="info-item executor">↳ ${execNames}</span>` : ''}
+              <span class="info-item">до ${fmtShort(parseDate(t.end))}</span>
+            </div>
+          </div>
+          <div class="pct-tag ${pctClass(t.pct)}">${t.pct}%</div>
+        </div>
+      `;
+    });
+  });
+
+  if (!hasAny) {
+    html += `<div class="empty-state">
+      <div class="empty-line"></div>
+      <div class="empty-text">нет задач на эту неделю${selectedPerson?` · ${cap(selectedPerson)}`:''}<br>используйте навигацию для перехода</div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+//  OVERVIEW
+// ============================================================
+function renderOverview() {
+  const container = document.getElementById('view-overview');
+  const days = weekDays(ovOffset);
+  const rangeLabel = `${fmtShort(days[0])} — ${fmtShort(days[6])}`;
+
+  let html = `
+    <div class="date-nav">
+      <button class="nav-arrow" onclick="ovOffset--;renderOverview()">←</button>
+      <div class="date-range-label">${rangeLabel}</div>
+      <button class="nav-arrow" onclick="ovOffset++;renderOverview()">→</button>
+    </div>
+  `;
+
+  let hasAny = false;
+
+  days.forEach(day => {
+    const isWeekend = day.getDay()===0||day.getDay()===6;
+    const isToday   = day.getTime()===today.getTime();
+    const dayTasks  = TASKS.filter(t => isOnDate(t, day));
+
+    if (!dayTasks.length) return;
+    hasAny = true;
+
+    // Group by executor
+    const byExec = {};
+    dayTasks.forEach(t => {
+      t.exec.trim().split(/\s+/).filter(x=>x.length>1).forEach(p => {
+        const key = p.toLowerCase();
+        if (!byExec[key]) byExec[key] = [];
+        byExec[key].push(t);
+      });
+    });
+
+    const inWork = dayTasks.filter(t=>t.pct<100).length;
+
+    html += `
+      <div class="overview-day">
+        <div class="overview-head">
+          <span class="overview-date-label">
+            ${day.toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'long'})}
+          </span>
+          ${isToday ? '<span class="today-tag">сегодня</span>' : ''}
+          ${inWork > 0 ? `<span style="font-size:11px;color:var(--terracotta);margin-left:auto">${inWork} в работе</span>` : ''}
+        </div>
+        <div class="exec-grid">
+    `;
+
+    Object.entries(byExec).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([exec, tasks]) => {
+      html += `
+        <div class="exec-name-cell">${cap(exec)}</div>
+        <div class="exec-tasks-cell">
+          ${tasks.map(t=>`<div class="exec-task-item ${t.pct===100?'done':''}">${cap(t.name)}</div>`).join('')}
+        </div>
+      `;
+    });
+
+    html += `</div></div>`;
+  });
+
+  if (!hasAny) {
+    html += `<div class="empty-state">
+      <div class="empty-line"></div>
+      <div class="empty-text">нет задач на эту неделю<br>используйте навигацию для перехода</div>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+</script>
+</body>
+</html>
