@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>idealist · план</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111;
+  --card:#1c1c1c;
+  --card2:#242424;
+  --card3:#2c2c2c;
+  --line:#333;
+  --line2:#3e3e3e;
+  --terra:#de7a58;
+  --terra-bg:rgba(222,122,88,.15);
+  --green:#3f574f;
+  --green-t:#7ecfba;
+  --green-bg:rgba(63,87,79,.22);
+  --white:#ffffff;
+  --off-white:#f0ece4;
+  --light:#d4cfc6;
+  --mid:#a09b92;
+  --muted:#6e6a62;
+  --dim:#3e3b36;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;}
+body{background:var(--bg);color:var(--off-white);font-family:'Inter',sans-serif;min-height:100vh;}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
+
+/* ══════════════════════════════
+   WELCOME SCREEN
+══════════════════════════════ */
+#s-welcome{
+  align-items:center;
+  justify-content:flex-start;
+  padding:60px 24px 40px;
+}
+.welcome-inner{width:100%;max-width:480px;margin:0 auto;}
+.welcome-logo{margin-bottom:48px;}
+.welcome-logo svg{height:26px;}
+.welcome-logo .logo-sub{font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+.welcome-title{font-size:28px;font-weight:800;color:var(--white);line-height:1.25;margin-bottom:8px;letter-spacing:-.01em;}
+.welcome-sub{font-size:15px;font-weight:400;color:var(--mid);margin-bottom:40px;line-height:1.6;}
+
+/* NAME GRID */
+.name-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;}
+.name-btn{
+  background:var(--card);
+  border:1.5px solid var(--line2);
+  border-radius:16px;
+  padding:18px 16px;
+  cursor:pointer;
+  text-align:left;
+  transition:all .18s;
+  font-family:'Inter',sans-serif;
+}
+.name-btn:hover{background:var(--card2);border-color:var(--mid);transform:translateY(-2px);}
+.name-btn.selected{background:var(--terra-bg);border-color:var(--terra);box-shadow:0 0 0 1px var(--terra);}
+.nb-avatar{
+  width:38px;height:38px;
+  border-radius:12px;
+  background:var(--card3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;
+  color:var(--light);
+  margin-bottom:10px;
+}
+.name-btn.selected .nb-avatar{background:var(--terra);color:#fff;}
+.nb-name{font-size:15px;font-weight:700;color:var(--off-white);}
+.nb-role{font-size:12px;font-weight:500;color:var(--muted);margin-top:2px;}
+
+/* ALL / MANAGER BUTTONS */
+.special-btns{display:flex;gap:10px;margin-bottom:32px;}
+.special-btn{
+  flex:1;
+  background:var(--card);
+  border:1.5px solid var(--line2);
+  border-radius:14px;
+  padding:14px 16px;
+  cursor:pointer;
+  text-align:center;
+  font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:700;
+  color:var(--mid);
+  transition:all .18s;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.special-btn:hover{background:var(--card2);border-color:var(--mid);color:var(--light);}
+.special-btn.mgr{border-color:var(--green);color:var(--green-t);background:var(--green-bg);}
+.special-btn.mgr:hover{background:rgba(63,87,79,.35);}
+.special-btn .sb-icon{font-size:22px;}
+
+.enter-btn{
+  width:100%;padding:17px;
+  font-size:16px;font-weight:700;
+  border:none;background:var(--terra);color:#fff;
+  border-radius:16px;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  transition:all .15s;
+  letter-spacing:.01em;
+}
+.enter-btn:hover{background:#c96840;transform:translateY(-1px);box-shadow:0 4px 20px rgba(222,122,88,.4);}
+.enter-btn:disabled{background:var(--card3);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ══════════════════════════════
+   TASK SCREEN (my tasks)
+══════════════════════════════ */
+#s-tasks{padding:0 0 100px;}
+
+/* TOP BAR */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:var(--bg);
+  border-bottom:1px solid var(--line);
+  padding:16px 20px;
+}
+.topbar-in{max-width:600px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.back-btn{width:36px;height:36px;border:1px solid var(--line2);background:none;color:var(--light);cursor:pointer;font-size:18px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.back-btn:hover{border-color:var(--terra);color:var(--terra);}
+.topbar-name{font-size:17px;font-weight:800;color:var(--white);flex:1;}
+.topbar-date{font-size:12px;font-weight:500;color:var(--muted);}
+.ico-btn{width:36px;height:36px;border:1px solid var(--line2);background:none;color:var(--mid);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:all .15s;flex-shrink:0;}
+.ico-btn:hover{border-color:var(--terra);color:var(--terra);}
+.ico-btn.spin{animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.content{max-width:600px;margin:0 auto;padding:24px 20px;}
+
+/* TODAY / DATE HEADERS */
+.day-head{margin-bottom:16px;margin-top:28px;}
+.day-head:first-child{margin-top:0;}
+.day-title{font-size:26px;font-weight:800;color:var(--white);letter-spacing:-.02em;margin-bottom:3px;}
+.day-title.future{font-size:20px;font-weight:700;color:var(--light);}
+.day-sub{font-size:13px;font-weight:500;color:var(--muted);}
+
+/* TASK CARD */
+.tc{background:var(--card);border-radius:20px;padding:20px;margin-bottom:10px;}
+.tc.done{background:var(--green-bg);border:1px solid var(--green);}
+.tc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.tc-name{font-size:18px;font-weight:700;color:var(--white);line-height:1.3;}
+.tc.done .tc-name{color:var(--green-t);}
+
+.badge-done{display:inline-flex;align-items:center;gap:5px;background:var(--green-bg);border:1.5px solid var(--green);color:var(--green-t);font-size:12px;font-weight:700;padding:5px 12px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+.badge-pct{font-size:12px;font-weight:700;padding:5px 12px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+.b-hi{color:var(--terra);background:var(--terra-bg);border:1.5px solid rgba(222,122,88,.35);}
+.b-mid{color:#d4a040;background:rgba(212,160,64,.13);border:1.5px solid rgba(212,160,64,.3);}
+.b-lo{color:var(--mid);background:var(--card2);border:1.5px solid var(--line2);}
+
+/* INFO PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;border-radius:10px;padding:6px 13px;white-space:nowrap;}
+.p-deadline{color:var(--off-white);background:var(--card2);}
+.p-deadline.urgent{color:#ff8f8f;background:rgba(255,100,100,.13);}
+.p-deadline.done-d{color:var(--green-t);background:var(--green-bg);}
+.p-team{color:var(--light);background:var(--card3);}
+.p-setter{color:var(--mid);background:var(--card2);font-size:12px;}
+
+/* TZ */
+.tz-wrap{background:var(--card2);border-radius:12px;padding:14px;margin-bottom:14px;}
+.tz-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.tz-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--terra);}
+.tz-edit{font-size:12px;font-weight:600;color:var(--mid);background:none;border:1px solid var(--line2);cursor:pointer;padding:4px 10px;border-radius:7px;font-family:'Inter',sans-serif;transition:all .15s;}
+.tz-edit:hover{color:var(--light);border-color:var(--mid);}
+.tz-body{font-size:14px;font-weight:400;color:var(--light);line-height:1.65;}
+.tz-body a{color:var(--terra);text-decoration:none;font-weight:600;}
+.tz-body a:hover{text-decoration:underline;}
+.tz-nil{font-size:13px;color:var(--muted);font-style:italic;}
+.tz-ta{width:100%;background:var(--card);border:1.5px solid var(--line2);color:var(--off-white);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;resize:vertical;min-height:70px;outline:none;line-height:1.6;margin-top:6px;}
+.tz-ta:focus{border-color:var(--terra);}
+.tz-acts{display:flex;gap:8px;margin-top:8px;}
+.btn-save{padding:8px 18px;font-size:12px;font-weight:700;border:none;background:var(--terra);color:#fff;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-save:hover{background:#c96840;}
+.btn-cx{padding:8px 14px;font-size:12px;font-weight:600;border:1px solid var(--line2);background:none;color:var(--mid);border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-cx:hover{color:var(--light);}
+
+/* COMPLETION */
+.comp-wrap{border-top:1px solid var(--line);padding-top:14px;}
+.comp-lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.comp-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.dti{background:var(--card2);border:1.5px solid var(--line2);color:var(--off-white);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;padding:10px 14px;border-radius:12px;outline:none;transition:border-color .15s;flex:1;min-width:180px;}
+.dti:focus{border-color:var(--terra);}
+.btn-done{padding:11px 22px;font-size:14px;font-weight:700;border:none;background:var(--green);color:#fff;border-radius:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap;}
+.btn-done:hover{background:#4a6b61;}
+.done-info{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--green-t);flex-wrap:wrap;}
+.undo{font-size:12px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;}
+.undo:hover{color:var(--mid);}
+
+/* ══════════════════════════════
+   OVERVIEW SCREEN
+══════════════════════════════ */
+#s-overview{padding:0 0 40px;}
+.ov-note{background:var(--green-bg);border:1px solid var(--green);border-radius:14px;padding:14px 16px;margin-bottom:20px;font-size:14px;font-weight:500;color:var(--green-t);line-height:1.6;}
+.ov-day{margin-bottom:8px;}
+.ov-dh{display:flex;align-items:center;gap:10px;padding:16px 0 10px;border-bottom:1px solid var(--line);}
+.ov-dl{font-size:16px;font-weight:700;color:var(--white);}
+.ov-status{font-size:11px;font-weight:700;padding:4px 12px;border-radius:10px;margin-left:auto;}
+.ov-busy{color:var(--terra);background:var(--terra-bg);}
+.ov-free{color:var(--green-t);background:var(--green-bg);}
+.ov-pr{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--card2);}
+.ov-pr:last-child{border-bottom:none;}
+.ov-nm{font-size:13px;font-weight:700;color:var(--light);min-width:86px;}
+.ov-tl{flex:1;display:flex;flex-direction:column;gap:5px;}
+.ov-ti{font-size:14px;font-weight:500;color:var(--off-white);line-height:1.4;}
+.ov-ti.done{color:var(--green-t);}
+.ov-pct{font-size:11px;font-weight:700;color:var(--terra);background:var(--terra-bg);padding:1px 7px;border-radius:6px;margin-left:6px;}
+
+/* WEEK NAV */
+.wnav{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.wa{width:36px;height:36px;border:1px solid var(--line2);background:none;color:var(--light);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:all .15s;}
+.wa:hover{border-color:var(--terra);color:var(--terra);}
+.wlbl{font-size:15px;font-weight:700;color:var(--white);flex:1;}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;display:none;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:28px 28px 0 0;padding:20px 20px 48px;width:100%;max-width:600px;max-height:94vh;overflow-y:auto;}
+.m-handle{width:40px;height:4px;background:var(--card3);border-radius:2px;margin:0 auto 20px;}
+.m-title{font-size:22px;font-weight:800;color:var(--white);margin-bottom:6px;letter-spacing:-.01em;}
+.m-sub{font-size:14px;color:var(--mid);margin-bottom:22px;line-height:1.6;}
+.fg{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.fl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+.fl span{color:var(--terra);}
+.fi,.fs,.fta{background:var(--card2);border:1.5px solid var(--line2);color:var(--off-white);font-family:'Inter',sans-serif;font-size:15px;font-weight:400;padding:13px 16px;border-radius:14px;outline:none;transition:border-color .15s;width:100%;}
+.fi::placeholder,.fta::placeholder{color:var(--muted);}
+.fi:focus,.fs:focus,.fta:focus{border-color:var(--terra);}
+.fta{resize:vertical;min-height:90px;line-height:1.6;}
+.fs{cursor:pointer;}
+.m-submit{width:100%;padding:16px;font-size:15px;font-weight:700;border:none;background:var(--terra);color:#fff;border-radius:14px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px;transition:all .15s;}
+.m-submit:hover{background:#c96840;}
+.m-ok{display:none;background:var(--green-bg);border:1px solid var(--green);color:var(--green-t);font-size:14px;font-weight:600;padding:14px;border-radius:12px;text-align:center;margin-top:14px;}
+.asgn-sec{margin-top:28px;}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.ac{background:var(--card2);border-left:3px solid var(--terra);border-radius:0 14px 14px 0;padding:14px 16px;margin-bottom:10px;position:relative;}
+.ac-who{font-size:11px;font-weight:700;color:var(--terra);text-transform:capitalize;margin-bottom:3px;}
+.ac-name{font-size:15px;font-weight:700;color:var(--white);margin-bottom:5px;}
+.ac-meta{font-size:13px;color:var(--light);font-weight:500;margin-bottom:3px;}
+.ac-tz{font-size:13px;color:var(--mid);line-height:1.6;}
+.ac-lnk a{font-size:13px;color:var(--terra);text-decoration:none;font-weight:600;}
+.ac-del{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 8px;border-radius:6px;transition:color .15s;}
+.ac-del:hover{color:#e07070;}
+
+/* FAB */
+.fab{position:fixed;bottom:24px;right:20px;z-index:200;display:flex;align-items:center;gap:8px;padding:15px 24px;background:var(--terra);color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:28px;cursor:pointer;box-shadow:0 4px 24px rgba(222,122,88,.4);transition:all .2s;letter-spacing:.01em;}
+.fab:hover{background:#c96840;transform:translateY(-2px);box-shadow:0 6px 28px rgba(222,122,88,.5);}
+.fab:active{transform:translateY(0);}
+
+/* EMPTY */
+.empty{padding:60px 0;text-align:center;}
+.e-dot{width:8px;height:8px;background:var(--terra);border-radius:50%;margin:0 auto 16px;}
+.e-txt{font-size:15px;font-weight:500;color:var(--muted);}
+
+/* ERR */
+.errb{background:var(--terra-bg);border:1px solid rgba(222,122,88,.35);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--terra);display:none;}
+
+@media(max-width:480px){
+  #s-welcome{padding:48px 18px 32px;}
+  .name-grid{grid-template-columns:1fr 1fr;}
+  .welcome-title{font-size:24px;}
+  .topbar{padding:14px 16px;}
+  .content{padding:18px 16px;}
+  .tc-name{font-size:16px;}
+  .day-title{font-size:22px;}
+  .fab{right:16px;bottom:20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ WELCOME SCREEN ════ -->
+<div class="screen active" id="s-welcome">
+  <div class="welcome-inner">
+    <div class="welcome-logo">
+      <svg viewBox="0 0 223.4615 83.1483" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 55.5625 71.652344 L 55.5625 71.089844 L 61.136719 71.089844 L 61.136719 71.652344 L 58.660156 71.652344 L 58.660156 78.527344 L 58.066406 78.527344 L 58.066406 71.652344 Z M 67.234375 77.757812 L 71.496094 71.089844 L 72.25 71.089844 L 72.25 78.527344 L 71.660156 78.527344 L 71.660156 71.859375 L 67.398438 78.527344 L 66.644531 78.527344 L 66.644531 71.089844 L 67.234375 71.089844 Z M 78.269531 78.527344 L 78.269531 71.089844 L 83.679688 71.089844 L 83.679688 78.527344 L 83.09375 78.527344 L 83.09375 71.652344 L 78.859375 71.652344 L 78.859375 78.527344 Z M 92.464844 78.679688 C 91.851562 78.679688 91.304688 78.515625 90.828125 78.179688 C 90.351562 77.851562 89.976562 77.398438 89.703125 76.8125 C 89.425781 76.234375 89.289062 75.574219 89.289062 74.832031 C 89.289062 74.085938 89.425781 73.425781 89.703125 72.84375 C 89.976562 72.265625 90.351562 71.808594 90.828125 71.476562 C 91.304688 71.144531 91.851562 70.980469 92.464844 70.980469 C 93.078125 70.980469 93.625 71.144531 94.101562 71.476562 C 94.578125 71.808594 94.957031 72.265625 95.230469 72.84375 C 95.503906 73.429688 95.640625 74.089844 95.640625 74.832031 C 95.640625 75.574219 95.503906 76.234375 95.230469 76.8125 C 94.957031 77.398438 94.578125 77.851562 94.101562 78.179688 C 93.625 78.515625 93.078125 78.679688 92.464844 78.679688 Z M 92.464844 78.136719 C 92.984375 78.136719 93.4375 77.988281 93.828125 77.695312 C 94.21875 77.402344 94.519531 77.003906 94.734375 76.5 C 94.949219 76.003906 95.058594 75.445312 95.058594 74.832031 C 95.058594 74.21875 94.949219 73.660156 94.730469 73.164062 C 94.515625 72.664062 94.214844 72.269531 93.828125 71.972656 C 93.4375 71.679688 92.984375 71.53125 92.464844 71.53125 C 91.945312 71.53125 91.496094 71.679688 91.109375 71.972656 C 90.71875 72.269531 90.417969 72.664062 90.199219 73.164062 C 89.984375 73.660156 89.875 74.21875 89.875 74.832031 C 89.875 75.445312 89.984375 76.003906 90.199219 76.5 C 90.414062 77.003906 90.714844 77.402344 91.105469 77.695312 C 91.496094 77.988281 91.945312 78.136719 92.464844 78.136719 Z M 105.480469 71.089844 L 105.480469 71.652344 L 101.816406 71.652344 L 101.816406 78.527344 L 101.222656 78.527344 L 101.222656 71.089844 Z M 110.960938 81.316406 L 110.960938 71.089844 L 111.539062 71.089844 L 111.539062 72.75 L 111.605469 72.75 C 111.722656 72.429688 111.890625 72.132812 112.101562 71.867188 C 112.316406 71.601562 112.578125 71.382812 112.890625 71.222656 C 113.203125 71.058594 113.574219 70.980469 114 70.980469 C 114.597656 70.980469 115.125 71.144531 115.570312 71.472656 C 116.011719 71.800781 116.355469 72.257812 116.601562 72.832031 C 116.84375 73.414062 116.96875 74.078125 116.96875 74.828125 C 116.96875 75.578125 116.84375 76.242188 116.601562 76.816406 C 116.355469 77.398438 116.007812 77.851562 115.566406 78.179688 C 115.121094 78.515625 114.597656 78.679688 114.007812 78.679688 C 113.585938 78.679688 113.21875 78.597656 112.902344 78.4375 C 112.582031 78.277344 112.316406 78.0625 112.101562 77.792969 C 111.886719 77.523438 111.71875 77.226562 111.605469 76.902344 L 111.546875 76.902344 L 111.546875 81.316406 Z M 111.542969 74.824219 C 111.542969 75.453125 111.640625 76.019531 111.832031 76.515625 C 112.023438 77.015625 112.304688 77.410156 112.664062 77.699219 C 113.023438 77.988281 113.453125 78.136719 113.957031 78.136719 C 114.464844 78.136719 114.898438 77.988281 115.257812 77.695312 C 115.617188 77.40625 115.898438 77.007812 116.09375 76.503906 C 116.289062 76.007812 116.382812 75.445312 116.382812 74.824219 C 116.382812 74.203125 116.289062 73.640625 116.097656 73.144531 C 115.910156 72.644531 115.628906 72.253906 115.265625 71.964844 C 114.902344 71.675781 114.46875 71.53125 113.957031 71.53125 C 113.449219 71.53125 113.019531 71.675781 112.660156 71.957031 C 112.300781 72.242188 112.019531 72.632812 111.832031 73.128906 C 111.640625 73.625 111.542969 74.191406 111.542969 74.824219 Z M 124.523438 78.683594 C 124.09375 78.683594 123.699219 78.597656 123.34375 78.429688 C 122.984375 78.257812 122.699219 78.007812 122.484375 77.679688 C 122.273438 77.351562 122.164062 76.949219 122.164062 76.476562 C 122.164062 76.167969 122.21875 75.894531 122.332031 75.660156 C 122.4375 75.421875 122.609375 75.222656 122.835938 75.046875 C 123.066406 74.878906 123.359375 74.738281 123.71875 74.625 C 124.078125 74.515625 124.503906 74.429688 125 74.367188 C 125.375 74.320312 125.714844 74.273438 126.011719 74.234375 C 126.3125 74.191406 126.542969 74.125 126.714844 74.027344 C 126.878906 73.933594 126.964844 73.792969 126.964844 73.601562 L 126.964844 73.292969 C 126.964844 72.75 126.792969 72.320312 126.453125 72 C 126.109375 71.679688 125.640625 71.519531 125.039062 71.519531 C 124.507812 71.519531 124.058594 71.636719 123.695312 71.871094 C 123.332031 72.109375 123.078125 72.410156 122.933594 72.777344 L 122.378906 72.566406 C 122.519531 72.210938 122.726562 71.914062 122.996094 71.679688 C 123.261719 71.441406 123.570312 71.269531 123.921875 71.152344 C 124.273438 71.035156 124.640625 70.980469 125.023438 70.980469 C 125.355469 70.980469 125.671875 71.027344 125.976562 71.117188 C 126.277344 71.214844 126.546875 71.355469 126.785156 71.542969 C 127.023438 71.734375 127.210938 71.976562 127.351562 72.273438 C 127.484375 72.570312 127.554688 72.921875 127.554688 73.332031 L 127.554688 78.527344 L 126.964844 78.527344 L 126.964844 77.183594 L 126.921875 77.183594 C 126.792969 77.460938 126.617188 77.714844 126.390625 77.941406 C 126.167969 78.171875 125.898438 78.347656 125.585938 78.484375 C 125.273438 78.617188 124.917969 78.683594 124.523438 78.683594 Z M 124.578125 78.140625 C 125.042969 78.140625 125.457031 78.023438 125.816406 77.796875 C 126.175781 77.566406 126.457031 77.257812 126.664062 76.859375 C 126.863281 76.460938 126.964844 76.015625 126.964844 75.511719 L 126.964844 74.414062 C 126.890625 74.480469 126.785156 74.535156 126.648438 74.585938 C 126.503906 74.632812 126.347656 74.679688 126.171875 74.714844 C 125.996094 74.753906 125.808594 74.785156 125.621094 74.8125 C 125.425781 74.839844 125.242188 74.867188 125.058594 74.890625 C 124.515625 74.957031 124.074219 75.050781 123.734375 75.1875 C 123.394531 75.320312 123.148438 75.496094 122.992188 75.710938 C 122.832031 75.929688 122.757812 76.191406 122.757812 76.496094 C 122.757812 77.003906 122.929688 77.40625 123.277344 77.699219 C 123.625 77.992188 124.058594 78.140625 124.578125 78.140625 Z M 136.84375 81.058594 L 136.84375 68.609375 L 137.429688 68.609375 L 137.429688 81.058594 Z M 136.84375 78.679688 C 136.324219 78.679688 135.839844 78.582031 135.394531 78.390625 C 134.949219 78.195312 134.558594 77.925781 134.226562 77.578125 C 133.890625 77.230469 133.628906 76.824219 133.445312 76.359375 C 133.253906 75.890625 133.164062 75.386719 133.164062 74.847656 C 133.164062 74.296875 133.253906 73.789062 133.445312 73.320312 C 133.628906 72.851562 133.890625 72.449219 134.226562 72.097656 C 134.558594 71.75 134.949219 71.476562 135.394531 71.285156 C 135.839844 71.089844 136.324219 70.996094 136.84375 70.996094 L 137.011719 70.996094 L 137.011719 78.679688 Z M 136.84375 78.136719 L 136.933594 78.136719 L 136.933594 71.539062 L 136.84375 71.539062 C 136.394531 71.539062 135.976562 71.628906 135.601562 71.800781 C 135.222656 71.976562 134.894531 72.214844 134.621094 72.515625 C 134.34375 72.820312 134.128906 73.171875 133.976562 73.570312 C 133.828125 73.96875 133.75 74.394531 133.75 74.847656 C 133.75 75.445312 133.882812 75.992188 134.148438 76.488281 C 134.414062 76.988281 134.777344 77.390625 135.246094 77.6875 C 135.714844 77.984375 136.246094 78.136719 136.84375 78.136719 Z M 137.429688 78.679688 L 137.265625 78.679688 L 137.265625 70.996094 L 137.429688 70.996094 C 137.949219 70.996094 138.4375 71.089844 138.882812 71.285156 C 139.324219 71.476562 139.714844 71.75 140.050781 72.097656 C 140.382812 72.449219 140.644531 72.851562 140.828125 73.320312 C 141.015625 73.789062 141.105469 74.296875 141.105469 74.847656 C 141.105469 75.386719 141.015625 75.890625 140.828125 76.359375 C 140.644531 76.824219 140.382812 77.230469 140.050781 77.578125 C 139.714844 77.925781 139.324219 78.195312 138.882812 78.390625 C 138.4375 78.582031 137.949219 78.679688 137.429688 78.679688 Z M 137.429688 78.136719 C 137.878906 78.136719 138.296875 78.046875 138.675781 77.871094 C 139.050781 77.699219 139.378906 77.460938 139.652344 77.15625 C 139.929688 76.855469 140.144531 76.507812 140.296875 76.109375 C 140.445312 75.710938 140.523438 75.292969 140.523438 74.847656 C 140.523438 74.25 140.390625 73.695312 140.128906 73.195312 C 139.863281 72.699219 139.5 72.296875 139.03125 71.992188 C 138.566406 71.691406 138.03125 71.539062 137.429688 71.539062 L 137.34375 71.539062 L 137.34375 78.136719 Z M 147.28125 77.757812 L 151.542969 71.089844 L 152.296875 71.089844 L 152.296875 78.527344 L 151.707031 78.527344 L 151.707031 71.859375 L 147.445312 78.527344 L 146.691406 78.527344 L 146.691406 71.089844 L 147.28125 71.089844 Z M 162.765625 78.527344 L 162.765625 71.636719 L 160.648438 71.648438 C 160.027344 71.648438 159.566406 71.761719 159.273438 71.996094 C 158.976562 72.226562 158.828125 72.601562 158.828125 73.121094 C 158.828125 73.628906 158.976562 74 159.265625 74.234375 C 159.554688 74.464844 160.003906 74.582031 160.605469 74.582031 L 162.96875 74.582031 L 162.96875 75.140625 L 160.605469 75.140625 C 160.082031 75.140625 159.644531 75.066406 159.292969 74.917969 C 158.941406 74.765625 158.679688 74.542969 158.503906 74.242188 C 158.332031 73.941406 158.242188 73.566406 158.242188 73.121094 C 158.242188 72.667969 158.332031 72.289062 158.507812 71.988281 C 158.6875 71.691406 158.953125 71.464844 159.3125 71.316406 C 159.667969 71.164062 160.113281 71.089844 160.648438 71.089844 L 163.335938 71.089844 L 163.335938 78.527344 Z M 157.703125 78.527344 L 159.875 74.828125 L 160.53125 74.828125 L 158.359375 78.527344 Z M 157.703125 78.527344 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 64.402344 26.84375 C 66.328125 24.914062 69.015625 23.921875 71.945312 24.074219 C 75.984375 24.289062 79.894531 26.539062 82.960938 30.40625 C 83.6875 31.296875 84.351562 32.304688 84.902344 33.34375 L 62.476562 33.34375 C 62.230469 30.59375 62.890625 28.351562 64.402344 26.84375 Z M 92.320312 42.058594 L 92.445312 41.566406 L 90.945312 41.066406 L 90.808594 41.648438 C 90.167969 44.421875 88.742188 46.980469 86.675781 49.042969 C 82.828125 52.890625 74.6875 51.074219 68.535156 44.996094 C 65.546875 41.941406 63.457031 38.292969 62.722656 34.886719 L 92.5625 34.886719 L 92.320312 33.90625 C 91.554688 30.84375 89.929688 27.957031 87.746094 25.773438 C 81.015625 19.042969 70.0625 19.042969 63.328125 25.773438 C 56.597656 32.503906 56.597656 43.457031 63.328125 50.1875 C 66.578125 53.4375 70.902344 55.226562 75.5 55.226562 C 80.148438 55.226562 84.5 53.4375 87.746094 50.1875 C 89.933594 48 91.515625 45.1875 92.320312 42.058594 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 104.71875 47.066406 C 102.457031 44.753906 100.859375 42 100.265625 39.414062 L 100.039062 37.976562 C 99.875 35.925781 100.378906 34.253906 101.507812 33.128906 C 102.980469 31.65625 105.03125 30.894531 107.277344 31.011719 C 110.382812 31.179688 113.390625 32.910156 115.753906 35.886719 C 116.273438 36.527344 117.617188 37.9375 119.832031 42.515625 L 119.832031 48.835938 C 119.472656 49.320312 119.082031 49.78125 118.648438 50.214844 C 115.703125 53.160156 109.453125 51.746094 104.71875 47.066406 Z M 119.832031 51.085938 L 119.832031 54.328125 L 132.179688 54.328125 L 132.179688 52.789062 L 127.226562 52.789062 L 127.226562 32.988281 C 127.226562 25.433594 122.800781 21.609375 113.730469 20.808594 C 103.148438 19.875 97.816406 24.65625 97.816406 24.65625 L 102.769531 27.628906 L 103.085938 26.992188 C 105.316406 23.414062 108.464844 21.878906 112.570312 22.140625 C 113.714844 22.214844 115.820312 22.339844 117.328125 23.695312 C 118.96875 25.175781 119.746094 28.132812 119.824219 32.296875 C 119.765625 32.238281 119.710938 32.179688 119.652344 32.125 C 114.375 26.847656 105.78125 26.847656 100.503906 32.125 C 95.222656 37.40625 95.222656 45.996094 100.503906 51.277344 C 103.050781 53.824219 106.441406 55.230469 110.050781 55.230469 C 113.691406 55.230469 117.105469 53.824219 119.652344 51.277344 C 119.714844 51.214844 119.769531 51.148438 119.832031 51.085938 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 137.878906 52.789062 L 134.578125 52.789062 L 134.578125 54.328125 L 148.503906 54.328125 L 148.503906 52.789062 L 145.203125 52.789062 L 145.203125 0.988281 L 134.578125 0.988281 L 134.578125 2.53125 L 137.878906 2.53125 Z M 137.878906 52.789062 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 220.824219 49.8125 L 221.070312 49.289062 L 219.6875 48.734375 L 219.464844 49.191406 C 218.132812 51.921875 215.675781 53.6875 213.214844 53.691406 C 211.457031 53.632812 209.464844 53.570312 209.464844 44.699219 L 209.464844 23.097656 L 219.972656 23.097656 L 219.972656 21.484375 L 209.464844 21.484375 L 209.464844 11.503906 L 202.144531 14.769531 L 202.144531 21.484375 L 198.839844 21.484375 L 198.839844 23.097656 L 202.144531 23.097656 L 202.144531 44.707031 C 202.21875 51.589844 206.042969 55.230469 213.199219 55.230469 C 216.3125 55.230469 219.230469 53.152344 220.824219 49.8125 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 28.941406 44.992188 C 25.722656 41.703125 23.617188 37.886719 23.007812 34.25 L 22.9375 33.820312 C 22.566406 30.851562 23.214844 28.4375 24.808594 26.84375 C 26.738281 24.914062 29.414062 23.925781 32.351562 24.074219 C 36.394531 24.289062 40.304688 26.535156 43.371094 30.40625 C 44.238281 31.472656 45.015625 32.703125 45.628906 33.972656 L 45.628906 50.136719 C 41.347656 52.503906 34.394531 50.378906 28.941406 44.992188 Z M 45.628906 54.328125 L 56.25 54.328125 L 56.25 52.785156 L 52.949219 52.785156 L 52.949219 0.992188 L 42.324219 0.992188 L 42.324219 2.53125 L 45.628906 2.53125 L 45.628906 23.6875 C 38.84375 19.078125 29.613281 19.898438 23.738281 25.773438 C 20.476562 29.035156 18.683594 33.371094 18.683594 37.980469 C 18.683594 42.59375 20.476562 46.929688 23.738281 50.1875 C 26.988281 53.4375 31.3125 55.230469 35.910156 55.230469 C 39.4375 55.230469 42.777344 54.210938 45.628906 52.273438 Z M 45.628906 54.328125 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 152.519531 52.789062 L 152.519531 54.328125 L 166.445312 54.328125 L 166.445312 52.789062 L 163.140625 52.789062 L 163.140625 21.558594 L 152.519531 21.558594 L 152.519531 23.097656 L 155.820312 23.097656 L 155.820312 52.789062 Z M 152.519531 52.789062 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 159.753906 18.003906 C 160.269531 18.121094 160.78125 18.132812 161.25 18.019531 C 162.023438 17.847656 162.621094 17.371094 162.933594 16.671875 C 163.34375 15.761719 163.222656 14.601562 162.597656 13.488281 C 161.527344 11.578125 159.375 10.410156 157.714844 10.820312 C 156.9375 10.988281 156.339844 11.464844 156.027344 12.160156 C 155.621094 13.074219 155.742188 14.238281 156.367188 15.347656 C 157.132812 16.714844 158.457031 17.703125 159.753906 18.003906 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 12.480469 21.558594 L 1.855469 21.558594 L 1.855469 23.097656 L 5.160156 23.097656 L 5.160156 52.785156 L 1.855469 52.785156 L 1.855469 54.328125 L 15.78125 54.328125 L 15.78125 52.785156 L 12.480469 52.785156 Z M 12.480469 21.558594 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 9.09375 18.003906 C 9.605469 18.121094 10.117188 18.132812 10.585938 18.019531 C 11.363281 17.847656 11.960938 17.371094 12.273438 16.671875 C 12.679688 15.761719 12.558594 14.601562 11.933594 13.488281 C 10.863281 11.578125 8.710938 10.410156 7.050781 10.820312 C 6.277344 10.988281 5.679688 11.464844 5.367188 12.160156 C 4.957031 13.074219 5.078125 14.238281 5.703125 15.347656 C 6.46875 16.714844 7.792969 17.703125 9.09375 18.003906 "/>
+<path fill-rule="nonzero" fill="#f2efe9" fill-opacity="1" d="M 185.503906 33.875 C 182.613281 32.832031 179.785156 31.816406 178.636719 31.335938 C 177.554688 30.886719 176.691406 30.34375 176.066406 29.722656 C 174.71875 28.382812 173.285156 25.328125 176.199219 23.671875 C 178.730469 22.234375 182.011719 23.074219 183.738281 23.761719 C 186.019531 24.664062 188.601562 27.433594 189.566406 32.933594 L 196.460938 32.933594 L 196.21875 32.019531 C 195.464844 29.019531 193.875 26.1875 191.738281 24.054688 L 191.691406 24.007812 C 189.109375 21.429688 185.488281 20.523438 181.847656 20.753906 C 177.414062 21.039062 174.804688 22.46875 173.507812 23.617188 C 171.417969 25.472656 170.648438 27.121094 170.648438 29.625 C 170.648438 31.40625 171.175781 32.925781 172.21875 34.136719 C 173.226562 35.300781 174.519531 36.261719 176.0625 36.988281 C 177.546875 37.6875 179.695312 38.550781 182.453125 39.558594 C 186.273438 40.929688 189.085938 42.074219 190.671875 43.175781 C 192.164062 44.207031 194.421875 46.019531 194.023438 48.238281 C 192.578125 56.222656 172.042969 50.316406 171.683594 41.152344 L 171.683594 40.71875 L 169.886719 40.71875 L 169.886719 51.703125 C 172.125 53.09375 178.507812 55.109375 183.359375 55.21875 C 188.308594 55.332031 191.949219 54.285156 194.175781 52.445312 C 196.433594 50.578125 197.707031 48.109375 197.582031 45.121094 C 197.324219 39.078125 189.652344 35.375 185.503906 33.875 "/>
+      </svg>
+      <div class="logo-sub">производственный план</div>
+    </div>
+
+    <h1 class="welcome-title">Привет!<br>Кто вы?</h1>
+    <p class="welcome-sub">Выберите своё имя, чтобы увидеть задачи</p>
+
+    <div class="name-grid" id="name-grid">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="special-btns">
+      <button class="special-btn" onclick="enterAll()">
+        <span class="sb-icon">&#128101;</span>
+        <span style="font-size:13px;">Все задачи</span>
+      </button>
+      <button class="special-btn mgr" onclick="enterOverview()">
+        <span class="sb-icon">&#128200;</span>
+        <span style="font-size:13px;">Загрузка производства</span>
+      </button>
+    </div>
+
+    <button class="enter-btn" id="enter-btn" onclick="enterPerson()" disabled>
+      Войти
+    </button>
+  </div>
+</div>
+
+<!-- ════ TASKS SCREEN ════ -->
+<div class="screen" id="s-tasks">
+  <div class="topbar">
+    <div class="topbar-in">
+      <button class="back-btn" onclick="goWelcome()">&#8592;</button>
+      <div class="topbar-name" id="topbar-name">Мои задачи</div>
+      <div class="topbar-date" id="topbar-date"></div>
+      <button class="ico-btn" id="rbtn" onclick="doRefresh()">&#8635;</button>
+    </div>
+  </div>
+  <div class="content" id="tasks-content">
+    <div class="errb" id="errb"></div>
+  </div>
+  <button class="fab" onclick="openModal()">+ Поставить задачу</button>
+</div>
+
+<!-- ════ OVERVIEW SCREEN ════ -->
+<div class="screen" id="s-overview">
+  <div class="topbar">
+    <div class="topbar-in">
+      <button class="back-btn" onclick="goWelcome()">&#8592;</button>
+      <div class="topbar-name">Загрузка производства</div>
+      <div class="topbar-date" id="ov-date"></div>
+      <button class="ico-btn" id="rbtn2" onclick="doRefresh2()">&#8635;</button>
+    </div>
+  </div>
+  <div class="content" id="ov-content"></div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-title">Поставить задачу</div>
+    <div class="m-sub">Задача сразу появится у исполнителя</div>
+    <div class="fg"><label class="fl">Исполнитель <span>*</span></label><select class="fs" id="f-exec"></select></div>
+    <div class="fg"><label class="fl">Кто ставит задачу <span>*</span></label><input class="fi" id="f-setter" type="text" placeholder="Ваше имя"></div>
+    <div class="fg"><label class="fl">Название задачи <span>*</span></label><input class="fi" id="f-name" type="text" placeholder="Например: печать визиток"></div>
+    <div class="fg"><label class="fl">ТЗ / описание</label><textarea class="fta" id="f-tz" placeholder="Материалы, количество, нюансы..."></textarea></div>
+    <div class="fg"><label class="fl">Ссылка на макет</label><input class="fi" id="f-link" type="url" placeholder="https://..."></div>
+    <div class="fg"><label class="fl">Клиент ждёт продукцию <span>*</span></label><input class="fi" id="f-end" type="datetime-local"></div>
+    <button class="m-submit" onclick="submitTask()">Поставить задачу</button>
+    <div class="m-ok" id="m-ok">&#10003;&ensp;Задача поставлена</div>
+    <div class="asgn-sec" id="asgn-list"></div>
+  </div>
+</div>
+
+<script>
+/* ── CONFIG ── */
+var SID='1UK4pMl6ojbTmFS5EZQ1M562btHkWhpRXSK_wB2tvexc';
+var SNAME='График проекта';
+var AKEY='ВСТАВЬТЕ_ВАШ_API_KEY_ЗДЕСЬ';
+
+/* ── FALLBACK DATA ── */
+var FB=[
+  {name:"кп балтех",exec:"алиса",start:"02/02/2026",end:"08/02/2026",pct:100,tz:"",setter:""},
+  {name:"коробки идеалист",exec:"евгений",start:"04/02/2026",end:"03/03/2026",pct:10,tz:"",setter:""},
+  {name:"катюши открытки",exec:"евгений вадим антон",start:"04/02/2026",end:"08/02/2026",pct:100,tz:"",setter:""},
+  {name:"прижарка наклейки",exec:"антон",start:"04/02/2026",end:"04/02/2026",pct:100,tz:"",setter:""},
+  {name:"постер",exec:"сергей",start:"04/02/2026",end:"05/02/2026",pct:100,tz:"",setter:""},
+  {name:"альбом мкс",exec:"алиса евгений",start:"02/02/2026",end:"02/02/2026",pct:100,tz:"",setter:""},
+  {name:"вау продукт для оли",exec:"евгений",start:"02/02/2026",end:"02/02/2026",pct:100,tz:"",setter:""},
+  {name:"вау продукт",exec:"евгений",start:"02/02/2026",end:"02/02/2026",pct:100,tz:"",setter:""},
+  {name:"кп петростат",exec:"алиса",start:"02/02/2026",end:"02/02/2026",pct:100,tz:"",setter:""},
+  {name:"15 открыток 23 февраля",exec:"алиса владимир вадим",start:"04/02/2026",end:"04/02/2026",pct:100,tz:"",setter:""},
+  {name:"конструкторы",exec:"евгений",start:"04/02/2026",end:"04/02/2026",pct:100,tz:"",setter:""},
+  {name:"блокноты 23",exec:"алиса владимир антон",start:"04/02/2026",end:"04/02/2026",pct:100,tz:"",setter:""},
+  {name:"открытки 8 марта",exec:"евгений",start:"04/02/2026",end:"04/02/2026",pct:100,tz:"",setter:""},
+  {name:"шубер конструкторы",exec:"алиса владимир евгений",start:"05/02/2026",end:"05/02/2026",pct:100,tz:"",setter:""},
+  {name:"цифра входная группа",exec:"евгений",start:"05/02/2026",end:"05/02/2026",pct:100,tz:"",setter:""},
+  {name:"открытка 3д элемент",exec:"евгений",start:"12/02/2026",end:"15/02/2026",pct:100,tz:"",setter:""},
+  {name:"герофарм грамоты",exec:"алиса вадим владимир",start:"13/02/2026",end:"17/02/2026",pct:100,tz:"",setter:""},
+  {name:"открытки печать",exec:"алиса",start:"16/02/2026",end:"16/02/2026",pct:100,tz:"",setter:""},
+  {name:"кп профсоюз",exec:"алиса",start:"16/02/2026",end:"16/02/2026",pct:100,tz:"",setter:""},
+  {name:"кп рхс",exec:"алиса",start:"16/02/2026",end:"16/02/2026",pct:100,tz:"",setter:""},
+  {name:"ежедневники пскб",exec:"вадим антон",start:"16/02/2026",end:"17/02/2026",pct:100,tz:"",setter:""},
+  {name:"тиснение визитки менеджеров",exec:"владимир",start:"17/02/2026",end:"17/02/2026",pct:100,tz:"",setter:""},
+  {name:"открытки",exec:"алиса",start:"18/02/2026",end:"18/02/2026",pct:100,tz:"",setter:""},
+  {name:"кп болло",exec:"алиса",start:"18/02/2026",end:"18/02/2026",pct:100,tz:"",setter:""},
+  {name:"оля печать",exec:"алиса",start:"18/02/2026",end:"18/02/2026",pct:100,tz:"",setter:""},
+  {name:"хортэк брошюры",exec:"алиса",start:"18/02/2026",end:"18/02/2026",pct:100,tz:"",setter:""},
+  {name:"кп весенние праздники",exec:"алиса",start:"19/02/2026",end:"19/02/2026",pct:100,tz:"",setter:""},
+  {name:"коробки",exec:"антон вадим",start:"19/02/2026",end:"24/02/2026",pct:100,tz:"",setter:""},
+  {name:"напечатать оле",exec:"алиса",start:"19/02/2026",end:"19/02/2026",pct:100,tz:"",setter:""},
+  {name:"открытка идеалист",exec:"алиса евгений антон вадим владимир",start:"24/02/2026",end:"09/03/2026",pct:100,tz:"",setter:""},
+  {name:"игры тест",exec:"евгений алиса",start:"02/03/2026",end:"03/03/2026",pct:100,tz:"",setter:""},
+  {name:"подставка акрил",exec:"алиса",start:"09/03/2026",end:"09/03/2026",pct:100,tz:"",setter:""},
+  {name:"блокноты женсовет",exec:"вадим антон владимир",start:"12/03/2026",end:"12/03/2026",pct:100,tz:"",setter:""},
+  {name:"упаковка для цветов",exec:"алиса владимир",start:"04/03/2026",end:"04/03/2026",pct:100,tz:"",setter:""},
+  {name:"коробки крышки дно",exec:"алиса вадим",start:"04/03/2026",end:"04/03/2026",pct:100,tz:"",setter:""},
+  {name:"вау продукт корни",exec:"алиса",start:"05/03/2026",end:"05/03/2026",pct:100,tz:"",setter:""},
+  {name:"кп",exec:"алиса",start:"11/03/2026",end:"11/03/2026",pct:100,tz:"",setter:""},
+  {name:"шава на районе",exec:"сергей",start:"12/03/2026",end:"12/03/2026",pct:100,tz:"",setter:""},
+  {name:"акрил подставки",exec:"евгений",start:"13/03/2026",end:"15/03/2026",pct:100,tz:"",setter:""},
+  {name:"кп клиника",exec:"алиса",start:"10/03/2026",end:"10/03/2026",pct:100,tz:"",setter:""},
+  {name:"конверты",exec:"антон алиса",start:"10/03/2026",end:"10/03/2026",pct:100,tz:"",setter:""},
+  {name:"фальц буклетов",exec:"алексей",start:"09/03/2026",end:"09/03/2026",pct:100,tz:"",setter:""},
+  {name:"зажарка футболок",exec:"антон",start:"10/03/2026",end:"11/03/2026",pct:100,tz:"",setter:""},
+  {name:"вагон метро",exec:"алиса",start:"10/03/2026",end:"10/03/2026",pct:100,tz:"",setter:""},
+  {name:"блокноты",exec:"алексей",start:"11/03/2026",end:"11/03/2026",pct:100,tz:"",setter:""},
+  {name:"коробка цветы 8 марта",exec:"алиса владимир",start:"06/03/2026",end:"09/03/2026",pct:100,tz:"",setter:""},
+  {name:"хортэк наклейки",exec:"сергей",start:"13/03/2026",end:"17/03/2026",pct:100,tz:"",setter:""},
+  {name:"кп",exec:"алиса",start:"13/03/2026",end:"15/03/2026",pct:100,tz:"",setter:""},
+  {name:"кп розовый кролик",exec:"алиса",start:"24/03/2026",end:"24/03/2026",pct:100,tz:"",setter:""},
+  {name:"ид хоум",exec:"алиса",start:"24/03/2026",end:"24/03/2026",pct:100,tz:"",setter:""},
+  {name:"ваш лого",exec:"алиса",start:"24/03/2026",end:"24/03/2026",pct:100,tz:"",setter:""},
+  {name:"открытки заводы пароходы",exec:"владимир алиса",start:"20/03/2026",end:"22/03/2026",pct:100,tz:"",setter:""},
+  {name:"блокноты бейджи",exec:"владимир сергей",start:"18/03/2026",end:"18/03/2026",pct:100,tz:"",setter:""},
+  {name:"мц брошюры",exec:"алексей владимир",start:"16/03/2026",end:"16/03/2026",pct:100,tz:"",setter:""}
+];
+
+var DATA=FB.slice();
+var currentPerson=null; /* null = all */
+var myOff=0, ovOff=0;
+var today=new Date(); today.setHours(0,0,0,0);
+var selectedName=null; /* for welcome screen */
+
+/* ── STORAGE ── */
+function lsJ(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+function lsJS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function tKey(n,e){return 'td5::'+n+'::'+e;}
+function getTD(n,e){return lsJ(tKey(n,e))||{done:false,eta:'',tz:'',doneMs:null};}
+function setTD(n,e,o){lsJS(tKey(n,e),o);}
+function getAsgn(){return lsJ('ia5')||[];}
+function setAsgn(a){lsJS('ia5',a);}
+
+/* ── UTILS ── */
+function pd(s){if(!s)return null;var p=s.split('/');return new Date(+p[2],+p[1]-1,+p[0]);}
+function onDay(t,d){
+  var td=getTD(t.name,t.exec);
+  var dd=new Date(d); dd.setHours(0,0,0,0);
+  var s=pd(t.start); if(!s)return false;
+  if(td.done&&td.doneMs){var dm=new Date(td.doneMs);dm.setHours(0,0,0,0);return dd>=s&&dd<=dm;}
+  var e=pd(t.end); if(!e)return false;
+  return dd>=s&&dd<=e;
+}
+function fmtD(d){return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});}
+function fmtS(d){return d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});}
+function fmtDT(s){if(!s)return '';var d=new Date(s);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})+' в '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
+function esc(s){if(!s)return '';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function dLeft(e){var ed=pd(e);if(!ed)return 999;return Math.round((ed-today)/86400000);}
+function initials(nm){return nm?nm.charAt(0).toUpperCase():'';}
+function wkDays(off){
+  var b=new Date(today);b.setDate(b.getDate()+off*7);
+  var dow=b.getDay()===0?6:b.getDay()-1;
+  var mon=new Date(b);mon.setDate(b.getDate()-dow);
+  var r=[];for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);r.push(d);}return r;
+}
+function getExecs(){
+  var s={};DATA.forEach(function(t){t.exec.trim().split(/\s+/).forEach(function(n){if(n.length>1)s[n.toLowerCase()]=1;});});
+  return Object.keys(s).sort();
+}
+function tzViewHtml(val){
+  if(!val)return '<div class="tz-nil">не указано</div>';
+  var isL=(val.indexOf('http')===0);
+  return '<div class="tz-body">'+(isL?'<a href="'+esc(val)+'" target="_blank">'+esc(val)+'</a>':esc(val))+'</div>';
+}
+
+/* ── SCREENS ── */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ── REFRESH ── */
+function doRefresh(){
+  var btn=document.getElementById('rbtn'); if(btn)btn.classList.add('spin');
+  if(AKEY!=='ВСТАВЬТЕ_ВАШ_API_KEY_ЗДЕСЬ'){
+    fetch('https://sheets.googleapis.com/v4/spreadsheets/'+SID+'/values/'+encodeURIComponent(SNAME+'!A7:K300')+'?key='+AKEY)
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(js){
+      DATA=(js.values||[]).filter(function(r){return r[0]&&r[1];}).map(function(r){
+        var ex=(r[3]||'').trim().toLowerCase().replace(/\bюля\b/g,'').replace(/\bландграф\b/g,'владимир').replace(/\s+/g,' ').trim();
+        return{name:(r[1]||'').trim().toLowerCase(),exec:ex,start:(r[5]||'').trim(),end:(r[7]||'').trim(),pct:parseInt((r[8]||'0').replace('%',''))||0,tz:(r[9]||'').trim(),setter:''};
+      }).filter(function(t){return t.exec;});
+      mergeAsgn();
+      var eb=document.getElementById('errb'); if(eb)eb.style.display='none';
+    }).catch(function(){
+      DATA=FB.slice(); mergeAsgn();
+      var eb=document.getElementById('errb'); if(eb){eb.textContent='Данные не загрузились';eb.style.display='block';}
+    }).finally(function(){if(btn)btn.classList.remove('spin');renderTasks();buildWelcome();});
+  } else {mergeAsgn();if(btn)btn.classList.remove('spin');renderTasks();buildWelcome();}
+}
+function doRefresh2(){
+  var btn=document.getElementById('rbtn2'); if(btn)btn.classList.add('spin');
+  setTimeout(function(){if(btn)btn.classList.remove('spin');renderOv();},300);
+}
+function mergeAsgn(){
+  getAsgn().forEach(function(item){
+    var ex=DATA.some(function(t){return t.name===item.name.toLowerCase()&&t.exec===item.exec;});
+    if(!ex) DATA.push({name:item.name.toLowerCase(),exec:item.exec,start:item.start,end:item.end,pct:0,tz:(item.tz||'')+(item.link?' '+item.link:''),setter:item.setter||''});
+  });
+}
+
+/* ── INIT ── */
+window.onload=function(){
+  mergeAsgn();
+  buildWelcome();
+  var td=document.getElementById('topbar-date');
+  if(td) td.textContent=today.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+  var od=document.getElementById('ov-date');
+  if(od) od.textContent=today.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+};
+
+/* ── WELCOME ── */
+function buildWelcome(){
+  var grid=document.getElementById('name-grid');
+  var execs=getExecs();
+  var sel=document.getElementById('f-exec');
+  if(sel) sel.innerHTML=execs.map(function(e){return '<option value="'+e+'">'+cap(e)+'</option>';}).join('');
+
+  grid.innerHTML='';
+  execs.forEach(function(nm){
+    var btn=document.createElement('button');
+    btn.className='name-btn'+(selectedName===nm?' selected':'');
+    btn.innerHTML='<div class="nb-avatar">'+initials(nm)+'</div>'
+      +'<div class="nb-name">'+cap(nm)+'</div>';
+    btn.onclick=function(){selectName(nm);};
+    grid.appendChild(btn);
+  });
+}
+
+function selectName(nm){
+  selectedName=nm;
+  document.querySelectorAll('.name-btn').forEach(function(b){b.classList.remove('selected');});
+  var btns=document.querySelectorAll('.name-btn');
+  btns.forEach(function(b){
+    if(b.querySelector('.nb-name')&&b.querySelector('.nb-name').textContent===cap(nm)){
+      b.classList.add('selected');
+    }
+  });
+  var eb=document.getElementById('enter-btn');
+  if(eb){eb.disabled=false;eb.textContent='Войти как '+cap(nm);}
+}
+
+function enterPerson(){
+  if(!selectedName)return;
+  currentPerson=selectedName;
+  myOff=0;
+  document.getElementById('topbar-name').textContent=cap(selectedName);
+  showScreen('s-tasks');
+  renderTasks();
+}
+
+function enterAll(){
+  currentPerson=null;
+  myOff=0;
+  document.getElementById('topbar-name').textContent='Все задачи';
+  showScreen('s-tasks');
+  renderTasks();
+}
+
+function enterOverview(){
+  ovOff=0;
+  showScreen('s-overview');
+  renderOv();
+}
+
+function goWelcome(){
+  selectedName=null;
+  var eb=document.getElementById('enter-btn');
+  if(eb){eb.disabled=true;eb.textContent='Войти';}
+  showScreen('s-welcome');
+}
+
+/* ── RENDER TASKS ── */
+function renderTasks(){
+  var c=document.getElementById('tasks-content');
+  if(!c)return;
+
+  /* build 14-day window centered on today + offset */
+  var allDays=[];
+  for(var i=0;i<14;i++){
+    var d=new Date(today);
+    d.setDate(today.getDate() + myOff*14 + i);
+    allDays.push(d);
+  }
+
+  var byDay=allDays.map(function(day){
+    return{day:day,tasks:DATA.filter(function(t){
+      if(!onDay(t,day))return false;
+      if(!currentPerson)return true;
+      return t.exec.trim().split(/\s+/).indexOf(currentPerson)>=0;
+    })};
+  });
+
+  var all=[];byDay.forEach(function(d){all=all.concat(d.tasks);});
+  var iw=all.filter(function(t){return t.pct<100;});
+  var dn=all.filter(function(t){return t.pct===100;});
+
+  /* nav label */
+  var first=allDays[0], last=allDays[13];
+  var navLabel=fmtS(first)+' \u2014 '+fmtS(last);
+
+  var h='<div class="wnav">'
+    +'<button class="wa" onclick="myOff--;renderTasks()">&#8592;</button>'
+    +'<div class="wlbl">'+navLabel+'</div>'
+    +'<button class="wa" onclick="myOff++;renderTasks()">&#8594;</button>'
+    +'</div>';
+
+  /* summary line */
+  h+='<div style="display:flex;gap:20px;margin-bottom:24px;">'
+    +'<div><span style="font-size:22px;font-weight:700;color:var(--terra)">'+iw.length+'</span>'
+    +'<span style="font-size:12px;font-weight:600;color:var(--muted);margin-left:5px;letter-spacing:.06em;text-transform:uppercase;">в работе</span></div>'
+    +'<div><span style="font-size:22px;font-weight:700;color:var(--green-t)">'+dn.length+'</span>'
+    +'<span style="font-size:12px;font-weight:600;color:var(--muted);margin-left:5px;letter-spacing:.06em;text-transform:uppercase;">готово</span></div>'
+    +'</div>';
+
+  var any=false;
+  byDay.forEach(function(item){
+    if(!item.tasks.length)return;any=true;
+    var day=item.day, tasks=item.tasks;
+    var isT=(day.getTime()===today.getTime());
+    var isTomorrow=(day.getTime()===today.getTime()+86400000);
+    var isYesterday=(day.getTime()===today.getTime()-86400000);
+
+    /* day title */
+    var titleText, titleClass='day-title';
+    if(isT){titleText='Сегодня';}
+    else if(isTomorrow){titleText='Завтра';titleClass='day-title future';}
+    else if(isYesterday){titleText='Вчера';titleClass='day-title future';}
+    else{titleText=fmtD(day);titleClass='day-title future';}
+
+    var subText=day.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
+
+    h+='<div class="day-head">'
+      +'<div class="'+titleClass+'">'+titleText+'</div>'
+      +'<div class="day-sub">'+subText+'</div>'
+      +'</div>';
+
+    var act=tasks.filter(function(t){return t.pct<100;});
+    var dnt=tasks.filter(function(t){return t.pct===100;});
+
+    act.concat(dnt).forEach(function(t,idx){
+      var isDone=(t.pct===100);
+      var tk=day.getTime()+'-'+idx;
+      var td=getTD(t.name,t.exec);
+      var tzVal=td.tz||t.tz||'';
+      var dl=dLeft(t.end);
+
+      /* badge */
+      var badge=isDone?'<span class="badge-done">&#10003; Выполнено</span>'
+        :(t.pct>=70?'<span class="badge-pct b-hi">'+t.pct+'%</span>'
+        :(t.pct>=30?'<span class="badge-pct b-mid">'+t.pct+'%</span>'
+        :'<span class="badge-pct b-lo">'+t.pct+'%</span>'));
+
+      /* deadline pill */
+      var dlCls,dlTxt;
+      if(isDone){dlCls='done-d';dlTxt='&#10003; сдано';}
+      else if(dl<0){dlCls='urgent';dlTxt='просрочено!';}
+      else if(dl===0){dlCls='urgent';dlTxt='клиент ждёт сегодня!';}
+      else if(dl===1){dlCls='urgent';dlTxt='клиент ждёт завтра';}
+      else{dlCls='';dlTxt='клиент ждёт '+fmtD(pd(t.end));}
+      var dlPill='<span class="pill p-deadline '+dlCls+'">&#128339; '+dlTxt+'</span>';
+
+      /* team pill — who else is on this task */
+      var allExecs=t.exec.trim().split(/\s+/).filter(function(x){return x.length>1;});
+      var teamPill='';
+      if(currentPerson && allExecs.length>1){
+        var others=allExecs.filter(function(x){return x.toLowerCase()!==currentPerson;}).map(cap).join(', ');
+        if(others) teamPill='<span class="pill p-team">&#128101; с вами: '+others+'</span>';
+      } else if(!currentPerson && allExecs.length>0){
+        teamPill='<span class="pill p-team">&#128100; '+allExecs.map(cap).join(', ')+'</span>';
+      }
+
+      var setPill=(t.setter?'<span class="pill p-setter">от '+cap(esc(t.setter))+'</span>':'');
+
+      /* completion */
+      var compH='';
+      if(!isDone){
+        compH='<div class="comp-wrap"><div class="comp-lbl">Когда вы сделаете?</div>'
+          +'<div class="comp-row">'
+          +'<input class="dti" type="datetime-local" id="eta-'+tk+'">'
+          +'<button class="btn-done" onclick="markDone(\''+esc(t.name)+'\',\''+esc(t.exec)+'\',\''+tk+'\')">Готово &#10003;</button>'
+          +'</div></div>';
+      } else {
+        var etaS=td.eta?fmtDT(td.eta):'';
+        compH='<div class="comp-wrap"><div class="done-info">&#10003; Выполнено'
+          +(etaS?' &middot; '+etaS:'')
+          +'<button class="undo" onclick="undoDone(\''+esc(t.name)+'\',\''+esc(t.exec)+'\')">отменить</button>'
+          +'</div></div>';
+      }
+
+      h+='<div class="tc'+(isDone?' done':'')+'">'
+        +'<div class="tc-head"><div class="tc-name">'+cap(t.name)+'</div>'+badge+'</div>'
+        +'<div class="pills">'+dlPill+teamPill+setPill+'</div>'
+        +'<div class="tz-wrap">'
+        +'<div class="tz-top"><span class="tz-label">ТЗ и макет</span>'
+        +'<button class="tz-edit" onclick="tzEd(\''+tk+'\')">&#9998; Редактировать</button></div>'
+        +'<div id="tv-'+tk+'">'+tzViewHtml(tzVal)+'</div>'
+        +'<div id="te-'+tk+'" style="display:none">'
+        +'<textarea class="tz-ta" id="ta-'+tk+'">'+esc(tzVal)+'</textarea>'
+        +'<div class="tz-acts">'
+        +'<button class="btn-save" onclick="tzSv(\''+esc(t.name)+'\',\''+esc(t.exec)+'\',\''+tk+'\')">Сохранить</button>'
+        +'<button class="btn-cx" onclick="tzCx(\''+tk+'\')">Отмена</button>'
+        +'</div></div></div>'
+        +compH+'</div>';
+    });
+  });
+
+  if(!any) h+='<div class="empty"><div class="e-dot"></div><div class="e-txt">Нет задач на этот период'+(currentPerson?' \u00b7 '+cap(currentPerson):'')+'</div></div>';
+  c.innerHTML=h;
+}
+
+/* ── TZ ── */
+function tzEd(tk){var v=document.getElementById('tv-'+tk),e=document.getElementById('te-'+tk);if(v)v.style.display='none';if(e)e.style.display='block';}
+function tzCx(tk){var v=document.getElementById('tv-'+tk),e=document.getElementById('te-'+tk);if(v)v.style.display='block';if(e)e.style.display='none';}
+function tzSv(n,ex,tk){
+  var a=document.getElementById('ta-'+tk);if(!a)return;
+  var val=a.value.trim();
+  var td=getTD(n,ex);td.tz=val;setTD(n,ex,td);
+  DATA.forEach(function(t){if(t.name===n&&t.exec===ex)t.tz=val;});
+  var v=document.getElementById('tv-'+tk);
+  if(v) v.innerHTML=tzViewHtml(val);
+  tzCx(tk);
+}
+
+/* ── COMPLETE ── */
+function markDone(n,ex,tk){
+  var inp=document.getElementById('eta-'+tk);
+  var eta=inp?inp.value:'';
+  var td=getTD(n,ex);td.done=true;td.eta=eta;td.doneMs=(new Date()).getTime();setTD(n,ex,td);
+  DATA.forEach(function(t){if(t.name===n&&t.exec===ex)t.pct=100;});
+  renderTasks();
+}
+function undoDone(n,ex){
+  var td=getTD(n,ex);td.done=false;td.doneMs=null;setTD(n,ex,td);
+  DATA.forEach(function(t){if(t.name===n&&t.exec===ex)t.pct=0;});
+  renderTasks();
+}
+
+/* ── OVERVIEW ── */
+function renderOv(){
+  var c=document.getElementById('ov-content');if(!c)return;
+  var days=wkDays(ovOff);
+  var h='<div class="ov-note">&#128200; Загрузка производства — кто чем занят по дням.</div>'
+    +'<div class="wnav">'
+    +'<button class="wa" onclick="ovOff--;renderOv()">&#8592;</button>'
+    +'<div class="wlbl">'+fmtS(days[0])+' \u2014 '+fmtS(days[6])+'</div>'
+    +'<button class="wa" onclick="ovOff++;renderOv()">&#8594;</button>'
+    +'</div>';
+  var any=false;
+  days.forEach(function(day){
+    var isT=(day.getTime()===today.getTime());
+    var dt=DATA.filter(function(t){return onDay(t,day);});
+    if(!dt.length)return;any=true;
+    var byE={};
+    dt.forEach(function(t){t.exec.trim().split(/\s+/).filter(function(x){return x.length>1;}).forEach(function(p){var k=p.toLowerCase();if(!byE[k])byE[k]=[];byE[k].push(t);});});
+    var iw=dt.filter(function(t){return t.pct<100;}).length;
+    h+='<div class="ov-day"><div class="ov-dh">'
+      +'<span class="ov-dl">'+fmtD(day)+', '+day.toLocaleDateString('ru-RU',{weekday:'long'})+'</span>'
+      +(isT?'<span style="background:var(--terra);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;">сегодня</span>':'')
+      +(iw>0?'<span class="ov-status ov-busy">'+iw+' в работе</span>':'<span class="ov-status ov-free">всё готово</span>')
+      +'</div>';
+    Object.keys(byE).sort().forEach(function(ex){
+      var ts=byE[ex];
+      h+='<div class="ov-pr"><div class="ov-nm">'+cap(ex)+'</div><div class="ov-tl">';
+      ts.forEach(function(t){
+        h+='<div class="ov-ti'+(t.pct===100?' done':'')+'">'
+          +cap(t.name)
+          +(t.pct>0&&t.pct<100?'<span class="ov-pct">'+t.pct+'%</span>':'')
+          +'</div>';
+      });
+      h+='</div></div>';
+    });
+    h+='</div>';
+  });
+  if(!any) h+='<div class="empty"><div class="e-dot"></div><div class="e-txt">Нет задач на эту неделю</div></div>';
+  c.innerHTML=h;
+}
+
+/* ── MODAL ── */
+function openModal(){
+  var sel=document.getElementById('f-exec');
+  if(sel) sel.innerHTML=getExecs().map(function(e){return '<option value="'+e+'">'+cap(e)+'</option>';}).join('');
+  renderAsgnList();
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+function maybeClose(e){if(e.target===document.getElementById('overlay'))closeModal();}
+
+function renderAsgnList(){
+  var arr=getAsgn(),c=document.getElementById('asgn-list');
+  if(!arr.length){c.innerHTML='';return;}
+  var h='<div class="sec-lbl">Поставленные задачи ('+arr.length+')</div>';
+  arr.forEach(function(item,i){
+    h+='<div class="ac"><button class="ac-del" onclick="delAsgn('+i+')">&#10005;</button>'
+      +'<div class="ac-who">'+cap(esc(item.exec))+'</div>'
+      +'<div class="ac-name">'+esc(item.name)+'</div>'
+      +(item.setter?'<div class="ac-meta">Поставил: '+cap(esc(item.setter))+'</div>':'')
+      +'<div class="ac-meta">Клиент ждёт: '+esc(item.endLabel||item.end)+'</div>'
+      +(item.tz?'<div class="ac-tz">'+esc(item.tz)+'</div>':'')
+      +(item.link?'<div class="ac-lnk"><a href="'+esc(item.link)+'" target="_blank">'+esc(item.link)+'</a></div>':'')
+      +'</div>';
+  });
+  c.innerHTML=h;
+}
+
+function submitTask(){
+  var exec=document.getElementById('f-exec').value;
+  var setter=document.getElementById('f-setter').value.trim();
+  var name=document.getElementById('f-name').value.trim();
+  var tz=document.getElementById('f-tz').value.trim();
+  var link=document.getElementById('f-link').value.trim();
+  var endDT=document.getElementById('f-end').value;
+  if(!setter){document.getElementById('f-setter').focus();return;}
+  if(!name){document.getElementById('f-name').focus();return;}
+  if(!endDT){document.getElementById('f-end').focus();return;}
+
+  var ed=new Date(endDT);
+  function z(n){return(n<10?'0':'')+n;}
+  var endFmt=z(ed.getDate())+'/'+z(ed.getMonth()+1)+'/'+ed.getFullYear();
+  var endLabel=ed.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})+' в '+ed.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  var nd=new Date();
+  var startFmt=z(nd.getDate())+'/'+z(nd.getMonth()+1)+'/'+nd.getFullYear();
+
+  DATA.push({name:name.toLowerCase(),exec:exec,start:startFmt,end:endFmt,pct:0,tz:(tz+(link?' '+link:'')).trim(),setter:setter});
+  var arr=getAsgn();
+  arr.push({exec:exec,setter:setter,name:name,tz:tz,link:link,start:startFmt,end:endFmt,endLabel:endLabel});
+  setAsgn(arr);
+  ['f-setter','f-name','f-tz','f-link','f-end'].forEach(function(id){document.getElementById(id).value='';});
+  var ok=document.getElementById('m-ok');ok.style.display='block';
+  setTimeout(function(){ok.style.display='none';},2500);
+  renderAsgnList();
+  /* refresh tasks if visible */
+  if(document.getElementById('s-tasks').classList.contains('active')) renderTasks();
+}
+function delAsgn(i){
+  var arr=getAsgn(),item=arr[i];
+  if(item) DATA=DATA.filter(function(t){return !(t.name===item.name.toLowerCase()&&t.exec===item.exec);});
+  arr.splice(i,1);setAsgn(arr);renderAsgnList();
+}
+</script>
+</body>
+</html>
